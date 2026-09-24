@@ -1,0 +1,22 @@
+{
+  "name": "resolvex-workspace",
+  "version": "1.0.0",
+  "description": "ResolveX - Student Complaint Management System (Team Workspace)",
+  "main": "server/aiServer.js",
+  "scripts": {
+    "frontend": "npm --prefix frontend run dev",
+    "seed": "node scripts/seed.js",
+    "ai-server": "node server/aiServer.js",
+    "start": "node server/aiServer.js"
+  },
+  "keywords": ["student-complaints", "resolvex", "grievance-portal", "ai-intake"],
+  "author": "ResolveX Team (Member 5: Frontend, AI Intake, Postman, Seed, README)",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "mongoose": "^8.3.1"
+  }
+}
