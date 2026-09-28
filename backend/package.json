@@ -1,0 +1,30 @@
+{
+  "name": "issuehub-backend",
+  "version": "1.0.0",
+  "description": "IssueHub - University Complaint Management System (Backend API Server)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "seed": "node scripts/seed.js"
+  },
+  "keywords": [
+    "issuehub",
+    "complaint-management",
+    "university-portal",
+    "express",
+    "mongodb",
+    "jwt",
+    "rest-api"
+  ],
+  "author": "IssueHub Engineering Team",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^8.3.1"
+  }
+}

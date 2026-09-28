@@ -1,0 +1,792 @@
+{
+  "info": {
+    "_postman_id": "resolvex-collection-v1",
+    "name": "ResolveX - Student Complaint Management System API",
+    "description": "Automated Postman Collection for ResolveX testing Member 1 (Auth), Member 2 (Complaints), Member 3 (Priorities/Duplicates), Member 4 (Grievance/Audit), and Member 5 (AI Intake). Generated and maintained by Member 5.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "AUTH",
+      "item": [
+        {
+          "name": "1.1 Successful Student Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Response contains token and student role\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    var token = jsonData.token || (jsonData.data && jsonData.data.token);",
+                  "    pm.expect(token).to.be.a('string');",
+                  "    pm.environment.set(\"userToken\", token);",
+                  "    var user = jsonData.user || (jsonData.data && jsonData.data.user);",
+                  "    if (user && user.role) {",
+                  "        pm.expect(user.role).to.eql('student');",
+                  "    }",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"student@resolvex.edu\",\n  \"password\": \"Password123!\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "1.2 Successful Admin Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Response contains admin token\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    var token = jsonData.token || (jsonData.data && jsonData.data.token);",
+                  "    pm.expect(token).to.be.a('string');",
+                  "    pm.environment.set(\"adminToken\", token);",
+                  "    var user = jsonData.user || (jsonData.data && jsonData.data.user);",
+                  "    if (user && user.role) {",
+                  "        pm.expect(user.role).to.eql('admin');",
+                  "    }",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@resolvex.edu\",\n  \"password\": \"AdminPass123!\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "1.3 Successful Grievance Officer Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Response contains grievance token\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    var token = jsonData.token || (jsonData.data && jsonData.data.token);",
+                  "    pm.expect(token).to.be.a('string');",
+                  "    pm.environment.set(\"grievanceToken\", token);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"grievance@resolvex.edu\",\n  \"password\": \"GrievancePass123!\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "1.4 Invalid Login - Wrong Password",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 400 or 401\", function () {",
+                  "    pm.expect([400, 401]).to.include(pm.response.code);",
+                  "});",
+                  "pm.test(\"Error message is returned\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.message || jsonData.error).to.be.ok;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"student@resolvex.edu\",\n  \"password\": \"WrongPassword!\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "1.5 Missing Credentials",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 400 Bad Request\", function () {",
+                  "    pm.expect([400, 422]).to.include(pm.response.code);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "1.6 Unauthorized Request - No Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 401 Unauthorized\", function () {",
+                  "    pm.response.to.have.status(401);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/complaints/my",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "complaints", "my"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "COMPLAINTS",
+      "item": [
+        {
+          "name": "2.1 Create Complaint - Valid",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 201 or 200\", function () {",
+                  "    pm.expect([200, 201]).to.include(pm.response.code);",
+                  "});",
+                  "pm.test(\"Complaint created with ID and status\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    var complaint = jsonData.complaint || jsonData.data || jsonData;",
+                  "    var id = complaint._id || complaint.id;",
+                  "    pm.expect(id).to.be.ok;",
+                  "    pm.environment.set(\"complaintId\", id);",
+                  "    pm.expect(complaint.subject || complaint.title).to.include(\"WiFi\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"subject\": \"WiFi intermittent connectivity in Block C\",\n  \"description\": \"The 5GHz network keeps dropping connection every 10 minutes.\",\n  \"category\": \"IT/WiFi\",\n  \"location\": \"CSE Block C, 2nd Floor\",\n  \"priority\": \"High\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/complaints",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "complaints"]
+            }
+          }
+        },
+        {
+          "name": "2.2 Create Complaint - Invalid Missing Fields",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 400 or 422 for missing required fields\", function () {",
+                  "    pm.expect([400, 422]).to.include(pm.response.code);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"category\": \"IT/WiFi\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/complaints",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "complaints"]
+            }
+          }
+        },
+        {
+          "name": "2.3 Get Own Complaints",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Returns an array of complaints\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    var list = Array.isArray(jsonData) ? jsonData : (jsonData.complaints || jsonData.data);",
+                  "    pm.expect(list).to.be.an('array');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/complaints/my",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "complaints", "my"]
+            }
+          }
+        },
+        {
+          "name": "2.4 Get Complaint Details",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Complaint details match created complaint\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    var c = jsonData.complaint || jsonData.data || jsonData;",
+                  "    var id = c._id || c.id;",
+                  "    pm.expect(id).to.eql(pm.environment.get(\"complaintId\"));",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/complaints/{{complaintId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "complaints", "{{complaintId}}"]
+            }
+          }
+        },
+        {
+          "name": "2.5 Unauthorized Complaint Access",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Access with fake token returns 401 or 403\", function () {",
+                  "    pm.expect([401, 403]).to.include(pm.response.code);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer INVALID_TOKEN_12345"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/complaints/{{complaintId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "complaints", "{{complaintId}}"]
+            }
+          }
+        },
+        {
+          "name": "2.6 Withdraw Complaint",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Complaint status set to Withdrawn\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    var c = jsonData.complaint || jsonData.data || jsonData;",
+                  "    pm.expect(['Withdrawn', 'withdrawn', 'Cancelled']).to.include(c.status);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"Issue resolved on its own.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/complaints/{{complaintId}}/withdraw",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "complaints", "{{complaintId}}", "withdraw"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "ADMIN",
+      "item": [
+        {
+          "name": "3.1 Admin Access - List All Complaints",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Returns list of all complaints for admin\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    var list = Array.isArray(jsonData) ? jsonData : (jsonData.complaints || jsonData.data);",
+                  "    pm.expect(list).to.be.an('array');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/complaints",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "complaints"]
+            }
+          }
+        },
+        {
+          "name": "3.2 Unauthorized User Attempting Admin Operation",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 403 Forbidden\", function () {",
+                  "    pm.response.to.have.status(403);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/complaints",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "complaints"]
+            }
+          }
+        },
+        {
+          "name": "3.3 Admin Status Update",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Complaint status changed to In Progress\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    var c = jsonData.complaint || jsonData.data || jsonData;",
+                  "    pm.expect(c.status).to.eql(\"In Progress\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"In Progress\",\n  \"comment\": \"Assigned to IT technician.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/complaints/{{complaintId}}/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "complaints", "{{complaintId}}", "status"]
+            }
+          }
+        },
+        {
+          "name": "3.4 Admin Resolution Update",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Complaint status changed to Resolved\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    var c = jsonData.complaint || jsonData.data || jsonData;",
+                  "    pm.expect(c.status).to.eql(\"Resolved\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"Resolved\",\n  \"resolutionNotes\": \"Access point replaced and 5GHz signal verified.\",\n  \"proofOfFix\": \"Fixed AP #12 on CSE 2nd floor.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/complaints/{{complaintId}}/resolve",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "complaints", "{{complaintId}}", "resolve"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "GRIEVANCE OFFICER",
+      "item": [
+        {
+          "name": "4.1 Authorized Grievance Officer Access",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Returns grievance records or escalated complaints\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.be.ok;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{grievanceToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/grievance/complaints",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "grievance", "complaints"]
+            }
+          }
+        },
+        {
+          "name": "4.2 Unauthorized Grievance Access by Student",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 403 Forbidden\", function () {",
+                  "    pm.response.to.have.status(403);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/grievance/complaints",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "grievance", "complaints"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "AI INTAKE",
+      "item": [
+        {
+          "name": "5.1 Valid AI Natural-Language Intake",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"AI returns structured complaint fields\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.success).to.be.true;",
+                  "    var data = jsonData.data || jsonData;",
+                  "    pm.expect(data).to.have.property('subject');",
+                  "    pm.expect(data).to.have.property('description');",
+                  "    pm.expect(data).to.have.property('category');",
+                  "    pm.expect(data.subject).to.be.a('string');",
+                  "    pm.expect(data.description).to.be.a('string');",
+                  "    pm.expect(['Hostel', 'Academic', 'Infrastructure', 'Mess', 'IT/WiFi', 'Transport', 'Other']).to.include(data.category);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"prompt\": \"The WiFi in the CSE block has not been working for three days.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/ai/parse-complaint",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "ai", "parse-complaint"]
+            }
+          }
+        },
+        {
+          "name": "5.2 Invalid AI Request - Missing Prompt / Fallback Scenario",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Returns error status with fallbackToManual flag\", function () {",
+                  "    pm.expect([400, 422, 500]).to.include(pm.response.code);",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.fallbackToManual !== undefined || jsonData.error !== undefined).to.be.true;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"prompt\": \"\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/ai/parse-complaint",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "ai", "parse-complaint"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
